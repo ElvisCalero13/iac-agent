@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import boto3
 from dotenv import load_dotenv
-
+import json
 from iac_agent_bootstrap.git.base_git_provider import BaseGitProvider
 from iac_agent_bootstrap.git.git_command_runner import GitCommandRunner
 
@@ -28,7 +28,21 @@ class GitCliProvider(BaseGitProvider):
             SecretId=secret_name,
         )
 
-        return response.get("SecretString")
+        secret_value = response.get("SecretString")
+
+        try:
+            parsed = json.loads(secret_value)
+            if isinstance(parsed, dict):
+                return (
+                    parsed.get("GITHUB_TOKEN")
+                    or parsed.get("github_token")
+                    or parsed.get(secret_name)
+                    or next(iter(parsed.values()))
+                )
+        except json.JSONDecodeError:
+            pass
+
+        return secret_value
 
     def _with_auth(self, repo_url: str) -> str:
         token = self._load_github_token()
