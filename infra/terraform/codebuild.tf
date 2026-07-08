@@ -39,6 +39,11 @@ resource "aws_codebuild_project" "bootstrap" {
       name  = "BOOTSTRAP_CONFIG_PARAMETER"
       value = aws_ssm_parameter.repositories_config.name
     }
+
+    environment_variable {
+      name  = "GITHUB_TOKEN_SECRET_NAME"
+      value = aws_secretsmanager_secret.github_token.name
+    }
   }
 
   source {

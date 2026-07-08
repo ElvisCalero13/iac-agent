@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import boto3
 from dotenv import load_dotenv
 
 from iac_agent_bootstrap.git.base_git_provider import BaseGitProvider
@@ -12,8 +12,26 @@ class GitCliProvider(BaseGitProvider):
         load_dotenv()
         self.git = GitCommandRunner()
 
-    def _with_auth(self, repo_url: str) -> str:
+    def _load_github_token(self) -> str | None:
         token = os.getenv("GITHUB_TOKEN")
+        if token:
+            return token
+
+        secret_name = os.getenv("GITHUB_TOKEN_SECRET_NAME")
+        if not secret_name:
+            return None
+
+        region = os.getenv("AWS_REGION", "ap-southeast-2")
+        client = boto3.client("secretsmanager", region_name=region)
+
+        response = client.get_secret_value(
+            SecretId=secret_name,
+        )
+
+        return response.get("SecretString")
+
+    def _with_auth(self, repo_url: str) -> str:
+        token = self._load_github_token()
         username = os.getenv("GITHUB_USERNAME", "x-access-token")
 
         if not token:
@@ -25,6 +43,7 @@ class GitCliProvider(BaseGitProvider):
         return repo_url.replace(
             "https://github.com/",
             f"https://{username}:{token}@github.com/",
+            1,
         )
     
     def clone(self, repo_url: str, target_path: Path) -> None:
