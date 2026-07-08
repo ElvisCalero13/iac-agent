@@ -4,15 +4,12 @@ from iac_agent_bootstrap.context import BootstrapContext
 from iac_agent_bootstrap.artifacts.knowledge_artifact_builder import (
     KnowledgeArtifactBuilder,
 )
-from iac_agent_bootstrap.artifacts.local_artifact_publisher import (
-    LocalArtifactPublisher,
-)
-
+from iac_agent_bootstrap.publisher_factory import PublisherFactory
 
 class KnowledgePublisherStep:
     def __init__(self) -> None:
         self.artifact_builder = KnowledgeArtifactBuilder()
-        self.publisher = LocalArtifactPublisher()
+        self.publisher = PublisherFactory.create()
 
     def run(self, context: BootstrapContext) -> BootstrapContext:
         artifacts = self.artifact_builder.build(context.knowledge_base)
