@@ -1,0 +1,12 @@
+services:
+  iac-agent:
+    build: .
+    image: iac-agent:local
+    working_dir: /app
+    volumes:
+    - .:/app
+    - terraform-plugin-cache:/terraform.d/plugin-cache
+    entrypoint: ["iac-agent"]
+
+volumes:
+  terraform-plugin-cache:

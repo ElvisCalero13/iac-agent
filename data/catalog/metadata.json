@@ -1,0 +1,12 @@
+{
+  "repos_path": "data/repositories",
+  "modules_discovered": 1,
+  "spokes_configured": 1,
+  "generated_at": "2026-07-08T17:36:36.396449+00:00",
+  "incremental": true,
+  "processed_repositories": [],
+  "skipped_repositories": [
+    "iac-sandbox-module-s3",
+    "iac-sandbox-caas-spoke"
+  ]
+}

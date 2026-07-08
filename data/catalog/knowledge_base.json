@@ -1,0 +1,845 @@
+{
+  "metadata": {
+    "repos_path": "data/repositories",
+    "modules_discovered": 1,
+    "spokes_configured": 1,
+    "generated_at": "2026-07-08T17:36:36.396449+00:00",
+    "incremental": true,
+    "processed_repositories": [],
+    "skipped_repositories": [
+      "iac-sandbox-module-s3",
+      "iac-sandbox-caas-spoke"
+    ]
+  },
+  "repositories": {
+    "modules": {
+      "s3": {
+        "module_name": "s3",
+        "name": "terraform-aws-hub-s3",
+        "repo_name": "iac-sandbox-module-s3",
+        "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git",
+        "default_branch": "main",
+        "base_strategy": "latest_tag",
+        "local_path": "data/repositories/terraform-aws-hub-s3",
+        "latest_version": "v1.1.0",
+        "terraform_source": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git"
+      }
+    },
+    "spokes": {
+      "caas-spoke": {
+        "name": "terraform-aws-spoke",
+        "repo_name": "iac-sandbox-caas-spoke",
+        "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-caas-spoke.git",
+        "default_branch": "main",
+        "base_strategy": "main",
+        "local_path": "data/repositories/terraform-aws-spoke"
+      }
+    }
+  },
+  "spokes_state": {
+    "caas-spoke": {
+      "modules": {
+        "cloudwatch_contactless": {
+          "block_name": "cloudwatch_contactless",
+          "source_file": "cloudwatch_contactless.tf",
+          "source": "../modules/cloudwatch",
+          "inputs": {},
+          "terraform_block": "module \"cloudwatch_contactless\" {\n  source = \"../modules/cloudwatch\"\n\n}"
+        },
+        "kms_contactless": {
+          "block_name": "kms_contactless",
+          "source_file": "kms_contactless.tf",
+          "source": "../modules/kms",
+          "inputs": {},
+          "terraform_block": "module \"kms_contactless\" {\n  source = \"../modules/kms\"\n\n}"
+        },
+        "s3_contactless": {
+          "block_name": "s3_contactless",
+          "source_file": "s3_contactless.tf",
+          "source": "git::https://github.com/ElvisCalero13/iac-sandbox-module-s3.git?ref=v1.1.0",
+          "inputs": {
+            "enable_versioning": "var.s3_contactless_enable_versioning"
+          },
+          "terraform_block": "module \"s3_contactless\" {\n  source = \"git::https://github.com/ElvisCalero13/iac-sandbox-module-s3.git?ref=v1.1.0\"\n\n  enable_versioning = var.s3_contactless_enable_versioning\n}"
+        }
+      },
+      "variables": {
+        "s3_contactless_enable_versioning": {
+          "name": "s3_contactless_enable_versioning",
+          "source_file": "s3_contactless.variables.tf",
+          "terraform_block": "variable \"s3_contactless_enable_versioning\" {\n  description = \"Should versioning be enabled? (true/false)\"\n  type        = bool\n  default     = true\n}"
+        }
+      }
+    }
+  },
+  "modules": {
+    "s3": {
+      "repository": {
+        "module_name": "s3",
+        "name": "terraform-aws-hub-s3",
+        "repo_name": "iac-sandbox-module-s3",
+        "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git",
+        "default_branch": "main",
+        "base_strategy": "latest_tag",
+        "local_path": "data/repositories/terraform-aws-hub-s3",
+        "latest_version": "v1.1.0",
+        "terraform_source": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git"
+      },
+      "metadata": {
+        "name": "terraform-aws-hub-s3",
+        "module_key": "s3",
+        "repo_name": "iac-sandbox-module-s3",
+        "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git",
+        "path": "data/repositories/terraform-aws-hub-s3",
+        "category": "unknown",
+        "dependencies": [],
+        "base_strategy": "latest_tag"
+      },
+      "schema": {
+        "variables": {
+          "s3_access_points": {
+            "name": "s3_access_points",
+            "source_file": "s3_access_points_support.variables.tf",
+            "terraform_block": "variable \"s3_access_points\" {\n  description = \"Optional list of S3 Access Points to create for the bucket\"\n  type = list(object({\n    name   = string\n    vpc_id = optional(string)\n    policy = optional(string)\n    public_access_block = optional(object({\n      block_public_acls       = optional(bool, true)\n      block_public_policy     = optional(bool, true)\n      ignore_public_acls      = optional(bool, true)\n      restrict_public_buckets = optional(bool, true)\n    }), null)\n  }))\n  default = []\n}"
+          },
+          "bucket_name": {
+            "name": "bucket_name",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"bucket_name\" {\n  description = \"The name of the bucket\"\n  type        = string\n}"
+          },
+          "append_random_suffix": {
+            "name": "append_random_suffix",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"append_random_suffix\" {\n  description = \"[Optional] Append random string as suffix, to create unique S3 bucket name. Default set to true\"\n  type        = bool\n  default     = true\n}"
+          },
+          "force_s3_destroy": {
+            "name": "force_s3_destroy",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"force_s3_destroy\" {\n  description = \"[Optional] Force destruction of the S3 bucket when the stack is deleted\"\n  type        = string\n  default     = false\n}"
+          },
+          "consumer_policy_actions": {
+            "name": "consumer_policy_actions",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"consumer_policy_actions\" {\n  description = \"[Optional] Map of multiple S3 consumer policies to be applied to bucket e.g. {EC2Read = [s3:GetObject]}\"\n  type        = map(list(string))\n  default     = {}\n}"
+          },
+          "folder_names": {
+            "name": "folder_names",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"folder_names\" {\n  description = \"[Optional] List of folder names to be created in the S3 bucket. Will create .keep file in each folder\"\n  type        = list(string)\n  default     = []\n}"
+          },
+          "enable_versioning": {
+            "name": "enable_versioning",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_versioning\" {\n  description = \"Should versioning be enabled? (true/false)\"\n  type        = bool\n  default     = true\n}"
+          },
+          "versioning_status": {
+            "name": "versioning_status",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"versioning_status\" {\n  description = \"[Optional] It will Enable/Disable/Suspended object versioning.\"\n  type        = string\n  default     = \"Enabled\"\n\n  validation {\n    condition     = var.versioning_status == null ? true : contains([\"Enabled\", \"Suspended\", \"Disabled\"], var.versioning_status)\n    error_message = \"Valid values for versioning_status are Enabled, Suspended and Disabled.\"\n  }\n}"
+          },
+          "lifecycle_rules": {
+            "name": "lifecycle_rules",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"lifecycle_rules\" {\n  description = \"[Optional] List of lifecycle rules to transition or expire objects.\"\n  type = list(object({\n    rule_name                            = string\n    transition_class                     = optional(string, null)\n    transition_days                      = optional(number, null)\n    filter_prefix                        = optional(string, null)\n    filter_tags                          = optional(map(string), null)\n    expiration_days                      = optional(number, null)\n    incomplete_multipart_expiration_days = optional(number, null)\n    noncurrent_version_expiration_days   = optional(number, null)\n  }))\n  default = []\n\n  validation {\n    condition = alltrue([\n      for rule in var.lifecycle_rules :\n      rule.transition_class == null ? true : contains([\n        \"STANDARD_IA\", \"ONEZONE_IA\", \"INTELLIGENT_TIERING\",\n        \"GLACIER\", \"DEEP_ARCHIVE\", \"GLACIER_IR\"\n      ], rule.transition_class)\n    ])\n    error_message = \"Valid storage classes are: STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER, DEEP_ARCHIVE, GLACIER_IR.\"\n  }\n}"
+          },
+          "tags": {
+            "name": "tags",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"tags\" {\n  description = \"[Optional] Custom tags which can be passed on to the bucket\"\n  type        = map(string)\n  default     = {}\n}"
+          },
+          "object_tags": {
+            "name": "object_tags",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"object_tags\" {\n  description = \"[Optional] Custom tags which can be passed on to the bucket objects\"\n  type        = map(string)\n  default     = {}\n}"
+          },
+          "bucket_policy_document": {
+            "name": "bucket_policy_document",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"bucket_policy_document\" {\n  description = \"[Optional] Additional Bucket Policy JSON document.\"\n  type = object({\n    primary   = string\n    secondary = optional(string, \"{}\")\n  })\n  default = {\n    primary   = \"{}\"\n    secondary = \"{}\"\n  }\n}"
+          },
+          "object_lock_rule": {
+            "name": "object_lock_rule",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"object_lock_rule\" {\n  description = \"[Optional] Enable Object Lock rule configuration. Use in conjunction with object lock.\"\n  type = object({\n    mode           = string #Valid values are GOVERNANCE and COMPLIANCE\n    retention_days = number\n  })\n  default = {\n    mode           = null\n    retention_days = 0\n  }\n\n  validation {\n    condition     = var.object_lock_rule.mode == null ? true : contains([\"GOVERNANCE\", \"COMPLIANCE\"], var.object_lock_rule.mode)\n    error_message = \"Valid values for object-lock mode are GOVERNANCE and COMPLIANCE.\"\n  }\n}"
+          },
+          "kms_key_arn": {
+            "name": "kms_key_arn",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"kms_key_arn\" {\n  description = \"[Optional] ARN of the KMS Key to use for object encryption. By default, it creates a KMS key.\"\n  type = object({\n    primary   = string\n    secondary = optional(string, null)\n  })\n  default = {\n    primary   = null\n    secondary = null\n  }\n}"
+          },
+          "logging": {
+            "name": "logging",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"logging\" {\n  description = \"[Optional] Bucket access logging configuration.\"\n  type = object({\n    bucket_name = string\n    prefix      = string\n  })\n  default = null\n}"
+          },
+          "notifications": {
+            "name": "notifications",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"notifications\" {\n  description = \"[Optional] Bucket sns notification configuration.\"\n  type = object({\n    aws_sns_topic = string\n    events        = list(string)\n    filter_suffix = string\n    eventbridge   = optional(bool, false)\n  })\n  default = null\n}"
+          },
+          "cors_rule": {
+            "name": "cors_rule",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"cors_rule\" {\n  description = \"[Optional] Allowed origin for CORS backoffice bucket\"\n  type = object({\n    allowed_headers = optional(list(string), [\"*\"])\n    allowed_methods = optional(list(string), [\"PUT\", \"GET\"])\n    allowed_origins = optional(list(string), [\"*\"])\n    expose_headers  = optional(list(string), [])\n    max_age_seconds = optional(number, 3000)\n  })\n  default = null\n}"
+          },
+          "enable_sse": {
+            "name": "enable_sse",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_sse\" {\n  description = \"[Optional] Enable Server Side Encryption. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_databricks": {
+            "name": "enable_databricks",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_databricks\" {\n  description = \"[Optional] Enable Databricks. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "databricks_external_id": {
+            "name": "databricks_external_id",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"databricks_external_id\" {\n  description = \"[Optional] Databricks AWS account ID\"\n  type        = string\n  default     = \"044f9dc8-739e-4bed-bdc8-7ccf34f39d56\"\n}"
+          },
+          "enable_multiregion": {
+            "name": "enable_multiregion",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_multiregion\" {\n  description = \"[Optional] Enable Multiregion. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "replication_status": {
+            "name": "replication_status",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"replication_status\" {\n  description = \"[Optional] Enable Replication. Default is enabled.\"\n  type        = string\n  default     = \"Enabled\"\n\n  validation {\n    condition     = var.replication_status == null ? true : contains([\"Enabled\", \"Disabled\"], var.replication_status)\n    error_message = \"Valid values for replication status are Enabled and Disabled.\"\n  }\n}"
+          },
+          "inventory": {
+            "name": "inventory",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"inventory\" {\n  description = \"S3 bucket inventory configuration settings\"\n  type = object({\n    name = string\n    destination = object({\n      bucket = object({\n        format     = optional(string, \"Parquet\")\n        bucket_arn = optional(string, null)\n        prefix     = optional(string, null)\n      })\n    })\n    schedule = object({\n      frequency = optional(string, \"Daily\")\n    })\n    included_object_versions = optional(string, \"Current\")\n    optional_fields          = optional(list(string), [])\n  })\n  default = null\n}"
+          },
+          "bp_replication": {
+            "name": "bp_replication",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"bp_replication\" {\n  description = \"BP replication configuration\"\n  type = object({\n    bucket_arn = string\n    account_id = string\n  })\n  default = null\n}"
+          },
+          "enable_cloudtrail": {
+            "name": "enable_cloudtrail",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudtrail\" {\n  description = \"Enable CloudTrail for S3 object-level events\"\n  type        = bool\n  default     = false\n}"
+          },
+          "cloudtrail_bucket": {
+            "name": "cloudtrail_bucket",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"cloudtrail_bucket\" {\n  description = \"S3 bucket name for CloudTrail logs (required if enable_cloudtrail is true)\"\n  type        = string\n  default     = \"\"\n}"
+          },
+          "is_multi_region_trail": {
+            "name": "is_multi_region_trail",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"is_multi_region_trail\" {\n  description = \"Enable multi-region trail for S3 events across all regions\"\n  type        = bool\n  default     = false\n}"
+          },
+          "cloudtrail_bucket_secondary": {
+            "name": "cloudtrail_bucket_secondary",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"cloudtrail_bucket_secondary\" {\n  description = \"S3 bucket name for secondary CloudTrail logs\"\n  type        = string\n  default     = \"\"\n}"
+          },
+          "enable_cloudwatch_logs": {
+            "name": "enable_cloudwatch_logs",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudwatch_logs\" {\n  description = \"Enable CloudWatch Logs for primary CloudTrail\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_cloudwatch_logs_secondary": {
+            "name": "enable_cloudwatch_logs_secondary",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudwatch_logs_secondary\" {\n  description = \"Enable CloudWatch Logs for primary CloudTrail\"\n  type        = bool\n  default     = false\n}"
+          },
+          "cloudwatch_log_group_name": {
+            "name": "cloudwatch_log_group_name",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"cloudwatch_log_group_name\" {\n  description = \"CloudWatch Log Group name for primary CloudTrail logs\"\n  type        = string\n  default     = \"\"\n}"
+          },
+          "cloudwatch_log_group_name_secondary": {
+            "name": "cloudwatch_log_group_name_secondary",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"cloudwatch_log_group_name_secondary\" {\n  description = \"CloudWatch Log Group name for primary CloudTrail logs\"\n  type        = string\n  default     = \"\"\n}"
+          },
+          "enable_s3_access_points_support": {
+            "name": "enable_s3_access_points_support",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_s3_access_points_support\" {\n  description = \"Feature flag to enable S3 Access Points support\"\n  type        = bool\n  default     = false\n}"
+          }
+        },
+        "outputs": {
+          "bucket_id": {
+            "name": "bucket_id",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_id\" {\n  description = \"S3 Bucket Id\"\n  value       = aws_s3_bucket.bucket.id\n}"
+          },
+          "bucket_arn": {
+            "name": "bucket_arn",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_arn\" {\n  description = \"S3 Bucket ARN\"\n  value       = aws_s3_bucket.bucket.arn\n}"
+          },
+          "bucket_domain_name": {
+            "name": "bucket_domain_name",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_domain_name\" {\n  description = \"S3 Bucket Domain Name\"\n  value       = aws_s3_bucket.bucket.bucket_domain_name\n}"
+          },
+          "bucket_name": {
+            "name": "bucket_name",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_name\" {\n  description = \"S3 Bucket Name\"\n  value       = aws_s3_bucket.bucket.bucket\n}"
+          },
+          "consumer_policies": {
+            "name": "consumer_policies",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"consumer_policies\" {\n  description = \"S3 Bucket Consumer Policies name and ARN map\"\n  value = {\n    for name, policy in aws_iam_policy.consumers : name => policy.arn\n  }\n}"
+          },
+          "bucket_kms_key_id": {
+            "name": "bucket_kms_key_id",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_kms_key_id\" {\n#   description = \"S3 Bucket KMS Key ID\"\n#   value       = local.kms_key_id\n# }"
+          },
+          "bucket_kms_key_arn": {
+            "name": "bucket_kms_key_arn",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket_kms_key_arn\" {\n#   description = \"S3 Bucket KMS Key ARN\"\n#   value       = local.kms_key_arn\n# }"
+          },
+          "bucket": {
+            "name": "bucket",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"bucket\" {\n  description = \"S3 bucket details\"\n\n  value = merge(\n    {\n      primary = {\n        id      = aws_s3_bucket.bucket.id\n        name    = aws_s3_bucket.bucket.bucket\n        arn     = aws_s3_bucket.bucket.arn\n        domain  = aws_s3_bucket.bucket.bucket_domain_name\n        kms_id  = local.kms_key_id\n        kms_arn = local.kms_key_arn\n      }\n    },\n    var.enable_multiregion ? {\n      secondary = {\n        id      = aws_s3_bucket.bucket_secondary[0].id\n        name    = aws_s3_bucket.bucket_secondary[0].bucket\n        arn     = aws_s3_bucket.bucket_secondary[0].arn\n        domain  = aws_s3_bucket.bucket_secondary[0].bucket_domain_name\n        kms_id  = local.kms_key_id_secondary\n        kms_arn = local.kms_key_arn_secondary\n      }\n    } : {}\n  )\n}"
+          },
+          "cloudtrail_arn_primary": {
+            "name": "cloudtrail_arn_primary",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"cloudtrail_arn_primary\" {\n  description = \"CloudTrail ARN for primary S3 bucket object events\"\n  value       = var.enable_cloudtrail ? aws_cloudtrail.s3_object_events_primary[0].arn : null\n}"
+          },
+          "cloudtrail_arn_secondary": {
+            "name": "cloudtrail_arn_secondary",
+            "source_file": "outputs.tf",
+            "terraform_block": "output \"cloudtrail_arn_secondary\" {\n  description = \"CloudTrail ARN for secondary S3 bucket object events\"\n  value       = var.enable_cloudtrail && var.enable_multiregion ? aws_cloudtrail.s3_object_events_secondary[0].arn : null\n}"
+          }
+        },
+        "providers": {},
+        "required_providers": {
+          "versions.tf": {
+            "source_file": "versions.tf",
+            "terraform_block": "required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \">= 4.13.0\"\n\n      configuration_aliases = [\n        aws.service-primary,\n        aws.service-secondary\n      ]\n    }\n\n    random = {\n      source  = \"hashicorp/random\"\n      version = \">= 3.2.0\"\n    }\n  }"
+          }
+        },
+        "terraform": {
+          "terraform_blocks": {
+            "versions.tf": {
+              "source_file": "versions.tf",
+              "terraform_block": "terraform {\n  required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \">= 4.13.0\"\n\n      configuration_aliases = [\n        aws.service-primary,\n        aws.service-secondary\n      ]\n    }\n\n    random = {\n      source  = \"hashicorp/random\"\n      version = \">= 3.2.0\"\n    }\n  }\n\n  required_version = \">= 1.1.3\"\n}"
+            }
+          },
+          "required_version": ">= 1.1.3"
+        },
+        "resources": {
+          "aws_s3_bucket_versioning.s3_bucket_versioning": {
+            "type": "aws_s3_bucket_versioning",
+            "name": "s3_bucket_versioning",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_versioning\" \"s3_bucket_versioning\" {\n  count = var.enable_versioning ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket.id\n  versioning_configuration {\n    status = var.versioning_status\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_ownership_controls.s3_bucket_ownership_control": {
+            "type": "aws_s3_bucket_ownership_controls",
+            "name": "s3_bucket_ownership_control",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_ownership_controls\" \"s3_bucket_ownership_control\" {\n  bucket = aws_s3_bucket.bucket.id\n  rule {\n    object_ownership = \"BucketOwnerEnforced\"\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_server_side_encryption_configuration.s3_bucket_server_side_encryption_configuration": {
+            "type": "aws_s3_bucket_server_side_encryption_configuration",
+            "name": "s3_bucket_server_side_encryption_configuration",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"s3_bucket_server_side_encryption_configuration\" {\n  bucket = aws_s3_bucket.bucket.id\n  rule {\n    bucket_key_enabled = var.enable_sse ? true : null\n    apply_server_side_encryption_by_default {\n      sse_algorithm     = local.sse_algorithm\n      kms_master_key_id = local.kms_key_arn\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_lifecycle_configuration.s3_bucket_lifecycle_configuration": {
+            "type": "aws_s3_bucket_lifecycle_configuration",
+            "name": "s3_bucket_lifecycle_configuration",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_lifecycle_configuration\" \"s3_bucket_lifecycle_configuration\" {\n  count = length(var.lifecycle_rules) > 0 ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket.id\n\n  dynamic \"rule\" {\n    for_each = var.lifecycle_rules\n    content {\n      id     = rule.value.rule_name\n      status = \"Enabled\"\n\n      dynamic \"transition\" {\n        for_each = rule.value.transition_class != null ? [1] : []\n        content {\n          days          = rule.value.transition_days\n          storage_class = rule.value.transition_class\n        }\n      }\n\n      dynamic \"filter\" {\n        for_each = rule.value.filter_prefix != null ? [1] : []\n        content {\n          prefix = rule.value.filter_prefix\n        }\n      }\n\n      dynamic \"expiration\" {\n        for_each = rule.value.expiration_days != null ? [1] : []\n        content {\n          days = rule.value.expiration_days\n        }\n      }\n\n      dynamic \"abort_incomplete_multipart_upload\" {\n        for_each = rule.value.incomplete_multipart_expiration_days != null ? [1] : []\n        content {\n          days_after_initiation = rule.value.incomplete_multipart_expiration_days\n        }\n      }\n\n      dynamic \"noncurrent_version_expiration\" {\n        for_each = rule.value.noncurrent_version_expiration_days != null ? [1] : []\n        content {\n          noncurrent_days = rule.value.noncurrent_version_expiration_days\n        }\n      }\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_object_lock_configuration.s3_bucket_object_lock_configuration": {
+            "type": "aws_s3_bucket_object_lock_configuration",
+            "name": "s3_bucket_object_lock_configuration",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_object_lock_configuration\" \"s3_bucket_object_lock_configuration\" {\n  count = local.enable_object_lock ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket.id\n  rule {\n    default_retention {\n      mode = var.object_lock_rule.mode\n      days = var.object_lock_rule.retention_days\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_versioning.s3_bucket_versioning_secondary": {
+            "type": "aws_s3_bucket_versioning",
+            "name": "s3_bucket_versioning_secondary",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_versioning\" \"s3_bucket_versioning_secondary\" {\n  count = (var.enable_multiregion && var.enable_versioning) ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n  versioning_configuration {\n    status = var.versioning_status\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_ownership_controls.s3_bucket_ownership_control_secondary": {
+            "type": "aws_s3_bucket_ownership_controls",
+            "name": "s3_bucket_ownership_control_secondary",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_ownership_controls\" \"s3_bucket_ownership_control_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n  rule {\n    object_ownership = \"BucketOwnerEnforced\"\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_server_side_encryption_configuration.s3_bucket_server_side_encryption_configuration_secondary": {
+            "type": "aws_s3_bucket_server_side_encryption_configuration",
+            "name": "s3_bucket_server_side_encryption_configuration_secondary",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"s3_bucket_server_side_encryption_configuration_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n  rule {\n    bucket_key_enabled = var.enable_sse ? true : null\n    apply_server_side_encryption_by_default {\n      sse_algorithm     = local.sse_algorithm\n      kms_master_key_id = local.kms_key_arn_secondary\n    }\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_lifecycle_configuration.s3_bucket_lifecycle_configuration_secondary": {
+            "type": "aws_s3_bucket_lifecycle_configuration",
+            "name": "s3_bucket_lifecycle_configuration_secondary",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_lifecycle_configuration\" \"s3_bucket_lifecycle_configuration_secondary\" {\n  count = (var.enable_multiregion && length(var.lifecycle_rules) > 0) ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n\n  dynamic \"rule\" {\n    for_each = var.lifecycle_rules\n    content {\n      id     = rule.value.rule_name\n      status = \"Enabled\"\n\n      dynamic \"transition\" {\n        for_each = rule.value.transition_class != null ? [1] : []\n        content {\n          days          = rule.value.transition_days\n          storage_class = rule.value.transition_class\n        }\n      }\n\n      dynamic \"filter\" {\n        for_each = rule.value.filter_prefix != null ? [1] : []\n        content {\n          prefix = rule.value.filter_prefix\n        }\n      }\n\n      dynamic \"expiration\" {\n        for_each = rule.value.expiration_days != null ? [1] : []\n        content {\n          days = rule.value.expiration_days\n        }\n      }\n\n      dynamic \"abort_incomplete_multipart_upload\" {\n        for_each = rule.value.incomplete_multipart_expiration_days != null ? [1] : []\n        content {\n          days_after_initiation = rule.value.incomplete_multipart_expiration_days\n        }\n      }\n\n      dynamic \"noncurrent_version_expiration\" {\n        for_each = rule.value.noncurrent_version_expiration_days != null ? [1] : []\n        content {\n          noncurrent_days = rule.value.noncurrent_version_expiration_days\n        }\n      }\n    }\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_object_lock_configuration.s3_bucket_object_lock_configuration_secondary": {
+            "type": "aws_s3_bucket_object_lock_configuration",
+            "name": "s3_bucket_object_lock_configuration_secondary",
+            "source_file": "aws_s3_config.tf",
+            "terraform_block": "resource \"aws_s3_bucket_object_lock_configuration\" \"s3_bucket_object_lock_configuration_secondary\" {\n  count = (var.enable_multiregion && local.enable_object_lock) ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n  rule {\n    default_retention {\n      mode = var.object_lock_rule.mode\n      days = var.object_lock_rule.retention_days\n    }\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_iam_policy.bp_s3_replication_pol": {
+            "type": "aws_iam_policy",
+            "name": "bp_s3_replication_pol",
+            "source_file": "bp_replication_policy.tf",
+            "terraform_block": "resource \"aws_iam_policy\" \"bp_s3_replication_pol\" {\n  count = var.bp_replication != null ? 1 : 0\n\n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Id      = \"${var.bucket_name}-pol\"\n    Statement = [\n      {\n        \"Sid\" : \"SourceBucketPermissions\",\n        \"Effect\" : \"Allow\",\n        \"Action\" : [\n          \"s3:GetObjectRetention\",\n          \"s3:GetObjectVersionTagging\",\n          \"s3:GetObjectVersionAcl\",\n          \"s3:ListBucket\",\n          \"s3:GetObjectVersionForReplication\",\n          \"s3:GetObjectLegalHold\",\n          \"s3:GetReplicationConfiguration\",\n          \"s3:PutInventoryConfiguration\",\n          \"s3:PutObject\",\n          \"s3:PutReplicationConfiguration\",\n          \"s3:InitiateReplication\",\n          \"s3:ObjectOwnerOverrideToBucketOwner\",\n          \"s3:ReplicateObject\",\n          \"s3:GetObject\",\n          \"s3:GetObjectAcl\",\n          \"s3:GetObjectTagging\",\n          \"s3:ListBucket\",\n          \"s3:GetObjectVersion\"\n        ],\n        \"Resource\" : [\n          \"${aws_s3_bucket.bucket.arn}\",\n          \"${aws_s3_bucket.bucket.arn}/*\",\n        ]\n      },\n      {\n        \"Sid\" : \"DestinationBucketPermissions\",\n        \"Effect\" : \"Allow\",\n        \"Action\" : [\n          \"s3:ReplicateObject\",\n          \"s3:ObjectOwnerOverrideToBucketOwner\",\n          \"s3:GetObjectVersionTagging\",\n          \"s3:ReplicateTags\",\n          \"s3:ReplicateDelete\",\n          \"s3:PutObject\",\n          \"s3:PutObjectAcl\",\n          \"s3:PutObjectTagging\",\n          \"s3:ListBucket\",\n          \"s3:GetReplicationConfiguration\",\n          \"s3:PutInventoryConfiguration\",\n          \"s3:InitiateReplication\",\n          \"s3:ReplicateObject\"\n        ],\n        \"Resource\" : [\n          \"${var.bp_replication.bucket_arn}/*\",\n        ]\n      }\n    ]\n  })\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_role.bp_s3_replication_role": {
+            "type": "aws_iam_role",
+            "name": "bp_s3_replication_role",
+            "source_file": "bp_replication_policy.tf",
+            "terraform_block": "resource \"aws_iam_role\" \"bp_s3_replication_role\" {\n  count = var.bp_replication != null ? 1 : 0\n\n  name                = \"${var.bucket_name}-role\"\n  assume_role_policy  = data.aws_iam_policy_document.bp_s3_replication_pol_doc[0].json\n  managed_policy_arns = [aws_iam_policy.bp_s3_replication_pol[0].arn]\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_replication_configuration.replication_to_bp_pro": {
+            "type": "aws_s3_bucket_replication_configuration",
+            "name": "replication_to_bp_pro",
+            "source_file": "bp_replication_policy.tf",
+            "terraform_block": "resource \"aws_s3_bucket_replication_configuration\" \"replication_to_bp_pro\" {\n  count = var.bp_replication != null ? 1 : 0\n\n  role   = aws_iam_role.bp_s3_replication_role[0].arn\n  bucket = aws_s3_bucket.bucket.id\n\n  rule {\n    id       = \"Replication_to_BP_pro\"\n    priority = 1\n    status   = \"Enabled\"\n    delete_marker_replication {\n      status = \"Enabled\"\n    }\n    filter {\n      prefix = \"data/pro/deuna_bp/\"\n    }\n    destination {\n      account       = var.bp_replication.account_id\n      bucket        = var.bp_replication.bucket_arn\n      storage_class = \"STANDARD\"\n      access_control_translation {\n        owner = \"Destination\"\n      }\n    }\n  }\n\n  rule {\n    id       = \"Replication_to_BP_raw\"\n    priority = 2\n    status   = \"Enabled\"\n    delete_marker_replication {\n      status = \"Enabled\"\n    }\n    filter {\n      prefix = \"data/raw/deuna_bp/\"\n    }\n    destination {\n      account       = var.bp_replication.account_id\n      bucket        = var.bp_replication.bucket_arn\n      storage_class = \"STANDARD\"\n      access_control_translation {\n        owner = \"Destination\"\n      }\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_public_access_block.bucket": {
+            "type": "aws_s3_bucket_public_access_block",
+            "name": "bucket",
+            "source_file": "bucket_block_public_access.tf",
+            "terraform_block": "resource \"aws_s3_bucket_public_access_block\" \"bucket\" {\n  bucket = aws_s3_bucket.bucket.id\n\n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_public_access_block.bucket_secondary": {
+            "type": "aws_s3_bucket_public_access_block",
+            "name": "bucket_secondary",
+            "source_file": "bucket_block_public_access.tf",
+            "terraform_block": "resource \"aws_s3_bucket_public_access_block\" \"bucket_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n\n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_policy.this": {
+            "type": "aws_s3_bucket_policy",
+            "name": "this",
+            "source_file": "bucket_policy.tf",
+            "terraform_block": "resource \"aws_s3_bucket_policy\" \"this\" {\n  bucket = aws_s3_bucket.bucket.id\n  policy = data.aws_iam_policy_document.combined_policy.json\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_policy.this_secondary": {
+            "type": "aws_s3_bucket_policy",
+            "name": "this_secondary",
+            "source_file": "bucket_policy.tf",
+            "terraform_block": "resource \"aws_s3_bucket_policy\" \"this_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n  policy = data.aws_iam_policy_document.combined_policy_secondary[0].json\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_cloudtrail.s3_object_events_primary": {
+            "type": "aws_cloudtrail",
+            "name": "s3_object_events_primary",
+            "source_file": "cloudtrail.tf",
+            "terraform_block": "resource \"aws_cloudtrail\" \"s3_object_events_primary\" {\n  count = var.enable_cloudtrail ? 1 : 0\n\n  name           = \"${var.bucket_name}-primary-object-events\"\n  s3_bucket_name = var.cloudtrail_bucket\n  #s3_key_prefix                = \"${var.bucket_name}/\"\n  include_global_service_events = var.is_multi_region_trail\n  is_multi_region_trail         = var.is_multi_region_trail\n  enable_logging                = true\n  enable_log_file_validation    = true\n\n  cloud_watch_logs_group_arn = var.enable_cloudwatch_logs ? \"${aws_cloudwatch_log_group.cloudtrail_primary[0].arn}:*\" : null\n  cloud_watch_logs_role_arn  = var.enable_cloudwatch_logs ? aws_iam_role.cloudtrail_cloudwatch_primary[0].arn : null\n\n  advanced_event_selector {\n    name = \"S3 Object Events\"\n\n    field_selector {\n      field  = \"eventCategory\"\n      equals = [\"Data\"]\n    }\n\n    field_selector {\n      field  = \"resources.type\"\n      equals = [\"AWS::S3::Object\"]\n    }\n\n    field_selector {\n      field       = \"resources.ARN\"\n      starts_with = [\"${aws_s3_bucket.bucket.arn}/\"]\n    }\n\n    field_selector {\n      field  = \"eventName\"\n      equals = [\"GetObject\", \"DeleteObject\", \"PutObject\", \"CompleteMultipartUpload\", \"CopyObject\", \"DeleteObjects\"]\n    }\n  }\n\n  depends_on = [aws_s3_bucket_notification.eventbridge_primary[0]]\n  tags       = var.tags\n  provider   = aws.service-primary\n}"
+          },
+          "aws_cloudtrail.s3_object_events_secondary": {
+            "type": "aws_cloudtrail",
+            "name": "s3_object_events_secondary",
+            "source_file": "cloudtrail.tf",
+            "terraform_block": "resource \"aws_cloudtrail\" \"s3_object_events_secondary\" {\n  count = var.enable_cloudtrail && var.enable_multiregion ? 1 : 0\n\n  name           = \"${var.bucket_name}-secondary-object-events\"\n  s3_bucket_name = var.cloudtrail_bucket_secondary\n  #s3_key_prefix                = \"${var.bucket_name}/\"\n  include_global_service_events = var.is_multi_region_trail\n  is_multi_region_trail         = var.is_multi_region_trail\n  enable_logging                = true\n  enable_log_file_validation    = true\n\n  cloud_watch_logs_group_arn = var.enable_cloudwatch_logs_secondary ? \"${aws_cloudwatch_log_group.cloudtrail_secondary[0].arn}:*\" : null\n  cloud_watch_logs_role_arn  = var.enable_cloudwatch_logs_secondary ? aws_iam_role.cloudtrail_cloudwatch_secondary[0].arn : null\n\n  advanced_event_selector {\n    name = \"S3 Object Events Secondary\"\n\n    field_selector {\n      field  = \"eventCategory\"\n      equals = [\"Data\"]\n    }\n\n    field_selector {\n      field  = \"resources.type\"\n      equals = [\"AWS::S3::Object\"]\n    }\n\n    field_selector {\n      field       = \"resources.ARN\"\n      starts_with = [\"${aws_s3_bucket.bucket_secondary[0].arn}/\"]\n    }\n\n    field_selector {\n      field  = \"eventName\"\n      equals = [\"GetObject\", \"DeleteObject\", \"PutObject\", \"CompleteMultipartUpload\", \"CopyObject\", \"DeleteObjects\"]\n    }\n  }\n\n  depends_on = [aws_s3_bucket_notification.eventbridge_secondary[0]]\n  tags       = var.tags\n  provider   = aws.service-secondary\n}"
+          },
+          "aws_cloudwatch_log_group.cloudtrail_primary": {
+            "type": "aws_cloudwatch_log_group",
+            "name": "cloudtrail_primary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_cloudwatch_log_group\" \"cloudtrail_primary\" {\n  count             = var.enable_cloudwatch_logs && var.enable_cloudtrail ? 1 : 0\n  name              = var.cloudwatch_log_group_name\n  retention_in_days = 30\n  tags              = var.tags\n  provider          = aws.service-primary\n}"
+          },
+          "aws_iam_role.cloudtrail_cloudwatch_primary": {
+            "type": "aws_iam_role",
+            "name": "cloudtrail_cloudwatch_primary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_iam_role\" \"cloudtrail_cloudwatch_primary\" {\n  count = var.enable_cloudwatch_logs && var.enable_cloudtrail ? 1 : 0\n  name  = \"${var.bucket_name}-cloudtrail-cloudwatch-primary-role\"\n\n  assume_role_policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [{\n      Effect = \"Allow\"\n      Principal = {\n        Service = \"cloudtrail.amazonaws.com\"\n      }\n      Action = \"sts:AssumeRole\"\n    }]\n  })\n\n  tags     = var.tags\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_role_policy.cloudtrail_cloudwatch_primary": {
+            "type": "aws_iam_role_policy",
+            "name": "cloudtrail_cloudwatch_primary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_iam_role_policy\" \"cloudtrail_cloudwatch_primary\" {\n  count = var.enable_cloudwatch_logs && var.enable_cloudtrail ? 1 : 0\n  name  = \"${var.bucket_name}-cloudtrail-cloudwatch-primary-policy\"\n  role  = aws_iam_role.cloudtrail_cloudwatch_primary[0].id\n\n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [\n      {\n        Effect = \"Allow\"\n        Action = [\n          \"logs:CreateLogStream\",\n          \"logs:PutLogEvents\"\n        ]\n        Resource = \"${aws_cloudwatch_log_group.cloudtrail_primary[0].arn}:*\"\n      }\n    ]\n  })\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_cloudwatch_log_group.cloudtrail_secondary": {
+            "type": "aws_cloudwatch_log_group",
+            "name": "cloudtrail_secondary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_cloudwatch_log_group\" \"cloudtrail_secondary\" {\n  count             = var.enable_cloudwatch_logs && var.enable_cloudtrail && var.enable_multiregion ? 1 : 0\n  name              = var.cloudwatch_log_group_name_secondary\n  retention_in_days = 30\n  tags              = var.tags\n  provider          = aws.service-secondary\n}"
+          },
+          "aws_iam_role.cloudtrail_cloudwatch_secondary": {
+            "type": "aws_iam_role",
+            "name": "cloudtrail_cloudwatch_secondary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_iam_role\" \"cloudtrail_cloudwatch_secondary\" {\n  count = var.enable_cloudwatch_logs && var.enable_cloudtrail && var.enable_multiregion ? 1 : 0\n  name  = \"${var.bucket_name}-cloudtrail-cloudwatch-secondary-role\"\n\n  assume_role_policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [{\n      Effect = \"Allow\"\n      Principal = {\n        Service = \"cloudtrail.amazonaws.com\"\n      }\n      Action = \"sts:AssumeRole\"\n    }]\n  })\n\n  tags     = var.tags\n  provider = aws.service-secondary\n}"
+          },
+          "aws_iam_role_policy.cloudtrail_cloudwatch_secondary": {
+            "type": "aws_iam_role_policy",
+            "name": "cloudtrail_cloudwatch_secondary",
+            "source_file": "cloudwatch.tf",
+            "terraform_block": "resource \"aws_iam_role_policy\" \"cloudtrail_cloudwatch_secondary\" {\n  count = var.enable_cloudwatch_logs && var.enable_cloudtrail && var.enable_multiregion ? 1 : 0\n  name  = \"${var.bucket_name}-cloudtrail-cloudwatch-secondary-policy\"\n  role  = aws_iam_role.cloudtrail_cloudwatch_secondary[0].id\n\n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [\n      {\n        Effect = \"Allow\"\n        Action = [\n          \"logs:CreateLogStream\",\n          \"logs:PutLogEvents\"\n        ]\n        Resource = \"${aws_cloudwatch_log_group.cloudtrail_secondary[0].arn}:*\"\n      }\n    ]\n  })\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_iam_policy.consumers": {
+            "type": "aws_iam_policy",
+            "name": "consumers",
+            "source_file": "consumer_policy.tf",
+            "terraform_block": "resource \"aws_iam_policy\" \"consumers\" {\n  for_each = var.consumer_policy_actions\n\n  name   = \"${var.bucket_name}-${each.key}-${data.aws_region.active.name}\"\n  policy = data.aws_iam_policy_document.consumers[each.key].json\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_role.iam-role-bucket": {
+            "type": "aws_iam_role",
+            "name": "iam-role-bucket",
+            "source_file": "databricks_policy.tf",
+            "terraform_block": "resource \"aws_iam_role\" \"iam-role-bucket\" {\n  count = var.enable_databricks ? 1 : 0\n\n  name               = local.databricks_role_name\n  assume_role_policy = data.aws_iam_policy_document.trusted-policy-databricks_bucket[0].json\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_policy.iam-policy-bucket": {
+            "type": "aws_iam_policy",
+            "name": "iam-policy-bucket",
+            "source_file": "databricks_policy.tf",
+            "terraform_block": "resource \"aws_iam_policy\" \"iam-policy-bucket\" {\n  count = var.enable_databricks ? 1 : 0\n\n  policy = jsonencode({\n    Version = \"2012-10-17\",\n    Id      = \"${local.bucket_name}-unity-pol\",\n    Statement = concat(\n      [\n        {\n          Sid = \"s3PipelinesUnity\",\n          Action = [\n            \"s3:GetObject\",\n            \"s3:PutObject\",\n            \"s3:DeleteObject\",\n            \"s3:ListBucket\",\n            \"s3:GetBucketLocation\"\n          ],\n          Resource = [\n            \"arn:aws:s3:::${aws_s3_bucket.bucket.id}\",\n            \"arn:aws:s3:::${aws_s3_bucket.bucket.id}/*\"\n          ],\n          Effect = \"Allow\"\n        }\n      ],\n      local.kms_key_arn != null ? [{\n        Sid = \"kmsPipelinesUnity\",\n        Action = [\n          \"kms:Decrypt\",\n          \"kms:Encrypt\",\n          \"kms:GenerateDataKey*\"\n        ],\n        Resource = [local.kms_key_arn],\n        Effect   = \"Allow\"\n      }] : [],\n      [\n        {\n          Sid      = \"AssumeRolePipeline\",\n          Action   = [\"sts:AssumeRole\"],\n          Resource = [aws_iam_role.iam-role-bucket[0].arn],\n          Effect   = \"Allow\"\n        }\n      ]\n    )\n  })\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_role_policy_attachment.attach_policy": {
+            "type": "aws_iam_role_policy_attachment",
+            "name": "attach_policy",
+            "source_file": "databricks_policy.tf",
+            "terraform_block": "resource \"aws_iam_role_policy_attachment\" \"attach_policy\" {\n  count = var.enable_databricks ? 1 : 0\n\n  role       = aws_iam_role.iam-role-bucket[0].name\n  policy_arn = aws_iam_policy.iam-policy-bucket[0].arn\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_object.main": {
+            "type": "aws_s3_object",
+            "name": "main",
+            "source_file": "folders.tf",
+            "terraform_block": "resource \"aws_s3_object\" \"main\" {\n  count = length(var.folder_names)\n\n  bucket                 = aws_s3_bucket.bucket.bucket\n  key                    = \"${var.folder_names[count.index]}/.keep\"\n  kms_key_id             = local.kms_key_arn\n  server_side_encryption = local.sse_algorithm\n\n  tags = merge({\n    Name = \"${var.bucket_name}-${var.folder_names[count.index]}\"\n  }, var.object_tags)\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_access_point.this": {
+            "type": "aws_s3_access_point",
+            "name": "this",
+            "source_file": "s3_access_points_support.tf",
+            "terraform_block": "resource \"aws_s3_access_point\" \"this\" {\n  count = local.s3_access_points_enabled ? length(var.s3_access_points) : 0\n\n  name   = var.s3_access_points[count.index].name\n  bucket = aws_s3_bucket.bucket.id\n\n  vpc_configuration {\n    vpc_id = lookup(var.s3_access_points[count.index], \"vpc_id\", null)\n  }\n\n  policy = lookup(var.s3_access_points[count.index], \"policy\", null)\n\n  dynamic \"public_access_block\" {\n    for_each = var.s3_access_points[count.index].public_access_block != null ? [var.s3_access_points[count.index].public_access_block] : []\n    content {\n      block_public_acls       = lookup(public_access_block.value, \"block_public_acls\", true)\n      block_public_policy     = lookup(public_access_block.value, \"block_public_policy\", true)\n      ignore_public_acls      = lookup(public_access_block.value, \"ignore_public_acls\", true)\n      restrict_public_buckets = lookup(public_access_block.value, \"restrict_public_buckets\", true)\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket.bucket": {
+            "type": "aws_s3_bucket",
+            "name": "bucket",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket\" \"bucket\" {\n  bucket              = local.bucket_name\n  object_lock_enabled = local.enable_object_lock\n\n  force_destroy = var.force_s3_destroy\n\n  tags = merge({\n    Name = local.bucket_name\n  }, var.tags)\n\n  provider = aws.service-primary\n}"
+          },
+          "random_string.random_suffix": {
+            "type": "random_string",
+            "name": "random_suffix",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"random_string\" \"random_suffix\" {\n  length  = 12\n  upper   = false\n  lower   = true\n  numeric = true\n  special = false\n}"
+          },
+          "aws_s3_bucket_logging.default": {
+            "type": "aws_s3_bucket_logging",
+            "name": "default",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_logging\" \"default\" {\n  count = var.logging != null ? 1 : 0\n\n  bucket        = aws_s3_bucket.bucket.id\n  target_bucket = var.logging.bucket_name\n  target_prefix = var.logging.prefix\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_notification.default": {
+            "type": "aws_s3_bucket_notification",
+            "name": "default",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_notification\" \"default\" {\n  count = var.notifications != null ? 1 : 0\n\n  bucket      = aws_s3_bucket.bucket.id\n  eventbridge = var.notifications.eventbridge\n\n  topic {\n    topic_arn     = var.notifications.aws_sns_topic\n    events        = var.notifications.events\n    filter_suffix = var.notifications.filter_suffix\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_cors_configuration.cors-policy": {
+            "type": "aws_s3_bucket_cors_configuration",
+            "name": "cors-policy",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_cors_configuration\" \"cors-policy\" {\n  count = var.cors_rule != null ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket.id\n\n  cors_rule {\n    allowed_headers = var.cors_rule.allowed_headers\n    allowed_methods = var.cors_rule.allowed_methods\n    allowed_origins = var.cors_rule.allowed_origins\n    expose_headers  = var.cors_rule.expose_headers\n    max_age_seconds = var.cors_rule.max_age_seconds\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket_notification.eventbridge_primary": {
+            "type": "aws_s3_bucket_notification",
+            "name": "eventbridge_primary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_notification\" \"eventbridge_primary\" {\n  count = var.enable_cloudtrail && var.notifications == null ? 1 : 0\n\n  bucket      = aws_s3_bucket.bucket.id\n  eventbridge = true\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_s3_bucket.bucket_secondary": {
+            "type": "aws_s3_bucket",
+            "name": "bucket_secondary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket\" \"bucket_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  bucket              = local.bucket_name_secondary\n  object_lock_enabled = local.enable_object_lock\n  force_destroy       = var.force_s3_destroy\n\n  tags = merge({\n    Name = local.bucket_name_secondary\n  }, var.tags)\n\n  provider = aws.service-secondary\n}"
+          },
+          "random_string.random_suffix_secondary": {
+            "type": "random_string",
+            "name": "random_suffix_secondary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"random_string\" \"random_suffix_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  length  = 12\n  upper   = false\n  lower   = true\n  numeric = true\n  special = false\n}"
+          },
+          "aws_s3_bucket_logging.default_secondary": {
+            "type": "aws_s3_bucket_logging",
+            "name": "default_secondary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_logging\" \"default_secondary\" {\n  count = (var.enable_multiregion && var.logging != null) ? 1 : 0\n\n  bucket        = aws_s3_bucket.bucket_secondary[0].id\n  target_bucket = var.logging.bucket_name\n  target_prefix = var.logging.prefix\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_cors_configuration.cors-policy_secondary": {
+            "type": "aws_s3_bucket_cors_configuration",
+            "name": "cors-policy_secondary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_cors_configuration\" \"cors-policy_secondary\" {\n  count = (var.enable_multiregion && var.cors_rule != null) ? 1 : 0\n\n  bucket = aws_s3_bucket.bucket_secondary[0].id\n\n  cors_rule {\n    allowed_headers = var.cors_rule.allowed_headers\n    allowed_methods = var.cors_rule.allowed_methods\n    allowed_origins = var.cors_rule.allowed_origins\n    expose_headers  = var.cors_rule.expose_headers\n    max_age_seconds = var.cors_rule.max_age_seconds\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_s3_bucket_notification.eventbridge_secondary": {
+            "type": "aws_s3_bucket_notification",
+            "name": "eventbridge_secondary",
+            "source_file": "s3_bucket.tf",
+            "terraform_block": "resource \"aws_s3_bucket_notification\" \"eventbridge_secondary\" {\n  count = var.enable_multiregion && var.enable_cloudtrail && var.notifications == null ? 1 : 0\n\n  bucket      = aws_s3_bucket.bucket_secondary[0].id\n  eventbridge = true\n\n  provider = aws.service-secondary\n}"
+          }
+        },
+        "locals": {
+          "meta_1": {
+            "name": "meta_1",
+            "source_file": "meta.tf",
+            "terraform_block": "locals {\n  bucket_name = var.append_random_suffix ? \"${var.bucket_name}-${random_string.random_suffix.result}\" : var.bucket_name\n\n  databricks_full_name  = \"${local.bucket_name}-${data.aws_region.active.name}-unity-role\"\n  databricks_short_name = substr(local.databricks_full_name, 0, 53)\n  databricks_role_name  = length(local.databricks_full_name) > 64 ? \"${local.databricks_short_name}-unity-role\" : local.databricks_full_name\n\n  sse_algorithm = var.enable_sse ? \"AES256\" : \"aws:kms\"\n  kms_key_arn   = var.enable_sse ? null : var.kms_key_arn.primary\n  kms_key_id    = var.enable_sse ? null : var.kms_key_arn.primary\n  # kms_key_arn   = var.enable_sse ? null : var.kms_key_arn.primary != null ? var.kms_key_arn.primary : module.bucket_kms_key[0].key_arn\n  # kms_key_id    = var.enable_sse ? null : var.kms_key_arn.primary != null ? var.kms_key_arn.primary : module.bucket_kms_key[0].key_id\n\n  enable_object_lock   = var.object_lock_rule.mode != null ? true : false\n  inventory_bucket_arn = try(var.inventory.destination.bucket.bucket_arn, null) != null ? var.inventory.destination.bucket.bucket_arn : aws_s3_bucket.bucket.arn\n}"
+          },
+          "meta_2": {
+            "name": "meta_2",
+            "source_file": "meta.tf",
+            "terraform_block": "locals {\n  bucket_name_secondary = var.enable_multiregion ? \"${var.bucket_name}-${random_string.random_suffix_secondary[0].result}\" : \"\"\n\n  kms_key_arn_secondary = (var.enable_multiregion || var.enable_sse) ? null : var.kms_key_arn.secondary != null ? var.kms_key_arn.secondary : module.bucket_kms_key_secondary[0].key_arn\n  kms_key_id_secondary  = (var.enable_multiregion || var.enable_sse) ? null : var.kms_key_arn.secondary != null ? var.kms_key_arn.secondary : module.bucket_kms_key_secondary[0].key_id\n}"
+          },
+          "s3_access_points_support_1": {
+            "name": "s3_access_points_support_1",
+            "source_file": "s3_access_points_support.tf",
+            "terraform_block": "locals {\n  s3_access_points_enabled = var.enable_s3_access_points_support\n}"
+          }
+        },
+        "module_calls": {
+          "bucket_kms_key": {
+            "name": "bucket_kms_key",
+            "source_file": "kms_key.tf",
+            "terraform_block": "module \"bucket_kms_key\" {\n#   count = (var.kms_key_arn.primary == null && !var.enable_sse) ? 1 : 0\n\n#   source = \"git::https://example.com/terraform-modules/aws-kms-key.git\"\n\n#   alias_name           = var.bucket_name\n#   description          = \"S3 bucket encryption KMS key\"\n#   append_random_suffix = true\n#   create_service       = true\n\n#   service_key_info = {\n#     caller_account_ids = [data.aws_caller_identity.main.account_id]\n#     aws_service_names  = [\"s3.${data.aws_region.active.name}.amazonaws.com\"]\n#   }\n\n#   inventory_bucket = var.inventory != null ? local.bucket_name : \"\"\n#   tags             = var.tags\n\n#   providers = {\n#     aws = aws.service-primary\n#   }\n# }",
+            "source": "git::https://example.com/terraform-modules/aws-kms-key.git"
+          },
+          "bucket_kms_key_secondary": {
+            "name": "bucket_kms_key_secondary",
+            "source_file": "kms_key.tf",
+            "terraform_block": "module \"bucket_kms_key_secondary\" {\n#   count = (var.enable_multiregion && var.kms_key_arn.secondary == null && !var.enable_sse) ? 1 : 0\n\n#   source = \"git::https://example.com/terraform-modules/aws-kms-key.git\"\n\n#   alias_name           = local.bucket_name_secondary\n#   description          = \"S3 bucket encryption KMS key\"\n#   append_random_suffix = true\n#   create_service       = true\n\n#   service_key_info = {\n#     caller_account_ids = [data.aws_caller_identity.main_secondary.account_id]\n#     aws_service_names  = [\"s3.${data.aws_region.active_secondary.name}.amazonaws.com\"]\n#   }\n\n#   tags = var.tags\n\n#   providers = {\n#     aws = aws.service-secondary\n#   }\n# }",
+            "source": "git::https://example.com/terraform-modules/aws-kms-key.git"
+          }
+        },
+        "data_sources": {
+          "aws_iam_policy_document.bp_s3_replication_pol_doc": {
+            "type": "aws_iam_policy_document",
+            "name": "bp_s3_replication_pol_doc",
+            "source_file": "bp_replication_policy.tf",
+            "terraform_block": "data \"aws_iam_policy_document\" \"bp_s3_replication_pol_doc\" {\n  count = var.bp_replication != null ? 1 : 0\n\n  statement {\n    effect  = \"Allow\"\n    actions = [\"sts:AssumeRole\"]\n    principals {\n      identifiers = [\n        \"s3.amazonaws.com\"\n      ]\n      type = \"Service\"\n    }\n    principals {\n      type        = \"AWS\"\n      identifiers = [\"arn:aws:iam::${var.bp_replication.account_id}:root\"]\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_policy_document.combined_policy": {
+            "type": "aws_iam_policy_document",
+            "name": "combined_policy",
+            "source_file": "bucket_policy.tf",
+            "terraform_block": "data \"aws_iam_policy_document\" \"combined_policy\" {\n  override_policy_documents = compact([\n    var.bucket_policy_document.primary,\n    try(data.aws_iam_policy_document.inventory_policy[0].json, null)\n  ])\n\n  statement {\n    sid       = \"DenyNonSSLRequests\"\n    actions   = [\"s3:*\"]\n    effect    = \"Deny\"\n    resources = [aws_s3_bucket.bucket.arn, \"${aws_s3_bucket.bucket.arn}/*\"]\n\n    condition {\n      test     = \"Bool\"\n      variable = \"aws:SecureTransport\"\n      values   = [\"false\"]\n    }\n\n    principals {\n      type        = \"AWS\"\n      identifiers = [\"*\"]\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_policy_document.combined_policy_secondary": {
+            "type": "aws_iam_policy_document",
+            "name": "combined_policy_secondary",
+            "source_file": "bucket_policy.tf",
+            "terraform_block": "data \"aws_iam_policy_document\" \"combined_policy_secondary\" {\n  count = var.enable_multiregion ? 1 : 0\n\n  source_policy_documents = [\n    var.bucket_policy_document.secondary\n  ]\n\n  statement {\n    sid       = \"DenyNonSSLRequests\"\n    actions   = [\"s3:*\"]\n    effect    = \"Deny\"\n    resources = [aws_s3_bucket.bucket_secondary[0].arn, \"${aws_s3_bucket.bucket_secondary[0].arn}/*\"]\n\n    condition {\n      test     = \"Bool\"\n      variable = \"aws:SecureTransport\"\n      values   = [\"false\"]\n    }\n\n    principals {\n      type        = \"AWS\"\n      identifiers = [\"*\"]\n    }\n  }\n\n  provider = aws.service-secondary\n}"
+          },
+          "aws_iam_policy_document.consumers": {
+            "type": "aws_iam_policy_document",
+            "name": "consumers",
+            "source_file": "consumer_policy.tf",
+            "terraform_block": "data \"aws_iam_policy_document\" \"consumers\" {\n  for_each = var.consumer_policy_actions\n\n  policy_id = replace(each.key, \"/[^a-zA-Z0-9]/\", \"\")\n\n  statement {\n    effect  = \"Allow\"\n    sid     = replace(each.key, \"/[^a-zA-Z0-9]/\", \"\")\n    actions = each.value\n\n    resources = [\n      aws_s3_bucket.bucket.arn,\n      \"${aws_s3_bucket.bucket.arn}/*\",\n    ]\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_iam_policy_document.trusted-policy-databricks_bucket": {
+            "type": "aws_iam_policy_document",
+            "name": "trusted-policy-databricks_bucket",
+            "source_file": "databricks_policy.tf",
+            "terraform_block": "data \"aws_iam_policy_document\" \"trusted-policy-databricks_bucket\" {\n  count = var.enable_databricks ? 1 : 0\n\n  statement {\n    effect  = \"Allow\"\n    actions = [\"sts:AssumeRole\"]\n\n    principals {\n      type = \"AWS\"\n      identifiers = [\n        \"arn:aws:iam::414351767826:role/unity-catalog-prod-UCMasterRole-14S5ZJVK0TYTL\"\n      ]\n    }\n\n    condition {\n      test     = \"StringEquals\"\n      variable = \"sts:ExternalId\"\n      values   = [var.databricks_external_id]\n    }\n  }\n\n  statement {\n    effect  = \"Allow\"\n    actions = [\"sts:AssumeRole\"]\n\n    principals {\n      type        = \"AWS\"\n      identifiers = [\"*\"]\n    }\n\n    condition {\n      test     = \"ArnLike\"\n      variable = \"aws:PrincipalArn\"\n      values   = [\"arn:aws:iam::${data.aws_caller_identity.main.account_id}:role/${local.databricks_role_name}\"]\n    }\n  }\n\n  provider = aws.service-primary\n}"
+          },
+          "aws_caller_identity.main": {
+            "type": "aws_caller_identity",
+            "name": "main",
+            "source_file": "meta.tf",
+            "terraform_block": "data \"aws_caller_identity\" \"main\" {\n  provider = aws.service-primary\n}"
+          },
+          "aws_region.active": {
+            "type": "aws_region",
+            "name": "active",
+            "source_file": "meta.tf",
+            "terraform_block": "data \"aws_region\" \"active\" {\n  provider = aws.service-primary\n}"
+          },
+          "aws_caller_identity.main_secondary": {
+            "type": "aws_caller_identity",
+            "name": "main_secondary",
+            "source_file": "meta.tf",
+            "terraform_block": "data \"aws_caller_identity\" \"main_secondary\" {\n  provider = aws.service-secondary\n}"
+          },
+          "aws_region.active_secondary": {
+            "type": "aws_region",
+            "name": "active_secondary",
+            "source_file": "meta.tf",
+            "terraform_block": "data \"aws_region\" \"active_secondary\" {\n  provider = aws.service-secondary\n}"
+          }
+        }
+      },
+      "knowledge": {
+        "features": [],
+        "capabilities": {
+          "versioning": {
+            "variables": [
+              "enable_versioning",
+              "versioning_status"
+            ],
+            "resources": [
+              "aws_s3_bucket_versioning.s3_bucket_versioning",
+              "aws_s3_bucket_versioning.s3_bucket_versioning_secondary"
+            ],
+            "feature_flags": [
+              "enable_versioning"
+            ]
+          },
+          "lifecycle": {
+            "variables": [
+              "lifecycle_rules"
+            ],
+            "resources": [
+              "aws_s3_bucket_lifecycle_configuration.s3_bucket_lifecycle_configuration",
+              "aws_s3_bucket_lifecycle_configuration.s3_bucket_lifecycle_configuration_secondary"
+            ],
+            "feature_flags": []
+          },
+          "encryption": {
+            "variables": [
+              "kms_key_arn",
+              "enable_sse"
+            ],
+            "resources": [
+              "aws_s3_bucket_server_side_encryption_configuration.s3_bucket_server_side_encryption_configuration",
+              "aws_s3_bucket_server_side_encryption_configuration.s3_bucket_server_side_encryption_configuration_secondary"
+            ],
+            "feature_flags": [
+              "enable_sse"
+            ]
+          },
+          "cloudtrail": {
+            "variables": [
+              "enable_cloudtrail",
+              "cloudtrail_bucket",
+              "cloudtrail_bucket_secondary"
+            ],
+            "resources": [
+              "aws_cloudtrail.s3_object_events_primary",
+              "aws_cloudtrail.s3_object_events_secondary",
+              "aws_cloudwatch_log_group.cloudtrail_primary",
+              "aws_iam_role.cloudtrail_cloudwatch_primary",
+              "aws_iam_role_policy.cloudtrail_cloudwatch_primary",
+              "aws_cloudwatch_log_group.cloudtrail_secondary",
+              "aws_iam_role.cloudtrail_cloudwatch_secondary",
+              "aws_iam_role_policy.cloudtrail_cloudwatch_secondary"
+            ],
+            "feature_flags": [
+              "enable_cloudtrail"
+            ]
+          },
+          "cloudwatch": {
+            "variables": [
+              "enable_cloudwatch_logs",
+              "enable_cloudwatch_logs_secondary",
+              "cloudwatch_log_group_name",
+              "cloudwatch_log_group_name_secondary"
+            ],
+            "resources": [
+              "aws_cloudwatch_log_group.cloudtrail_primary",
+              "aws_iam_role.cloudtrail_cloudwatch_primary",
+              "aws_iam_role_policy.cloudtrail_cloudwatch_primary",
+              "aws_cloudwatch_log_group.cloudtrail_secondary",
+              "aws_iam_role.cloudtrail_cloudwatch_secondary",
+              "aws_iam_role_policy.cloudtrail_cloudwatch_secondary"
+            ],
+            "feature_flags": [
+              "enable_cloudwatch_logs",
+              "enable_cloudwatch_logs_secondary"
+            ]
+          },
+          "replication": {
+            "variables": [
+              "replication_status",
+              "bp_replication"
+            ],
+            "resources": [
+              "aws_iam_policy.bp_s3_replication_pol",
+              "aws_iam_role.bp_s3_replication_role",
+              "aws_s3_bucket_replication_configuration.replication_to_bp_pro"
+            ],
+            "feature_flags": []
+          },
+          "inventory": {
+            "variables": [
+              "inventory"
+            ],
+            "resources": [],
+            "feature_flags": []
+          },
+          "notifications": {
+            "variables": [
+              "notifications"
+            ],
+            "resources": [
+              "aws_s3_bucket_notification.default",
+              "aws_s3_bucket_notification.eventbridge_primary",
+              "aws_s3_bucket_notification.eventbridge_secondary"
+            ],
+            "feature_flags": []
+          }
+        },
+        "feature_flags": {
+          "enable_versioning": {
+            "name": "enable_versioning",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_versioning\" {\n  description = \"Should versioning be enabled? (true/false)\"\n  type        = bool\n  default     = true\n}"
+          },
+          "enable_sse": {
+            "name": "enable_sse",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_sse\" {\n  description = \"[Optional] Enable Server Side Encryption. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_databricks": {
+            "name": "enable_databricks",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_databricks\" {\n  description = \"[Optional] Enable Databricks. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_multiregion": {
+            "name": "enable_multiregion",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_multiregion\" {\n  description = \"[Optional] Enable Multiregion. Default is disabled.\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_cloudtrail": {
+            "name": "enable_cloudtrail",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudtrail\" {\n  description = \"Enable CloudTrail for S3 object-level events\"\n  type        = bool\n  default     = false\n}"
+          },
+          "is_multi_region_trail": {
+            "name": "is_multi_region_trail",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"is_multi_region_trail\" {\n  description = \"Enable multi-region trail for S3 events across all regions\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_cloudwatch_logs": {
+            "name": "enable_cloudwatch_logs",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudwatch_logs\" {\n  description = \"Enable CloudWatch Logs for primary CloudTrail\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_cloudwatch_logs_secondary": {
+            "name": "enable_cloudwatch_logs_secondary",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_cloudwatch_logs_secondary\" {\n  description = \"Enable CloudWatch Logs for primary CloudTrail\"\n  type        = bool\n  default     = false\n}"
+          },
+          "enable_s3_access_points_support": {
+            "name": "enable_s3_access_points_support",
+            "source_file": "variables.tf",
+            "terraform_block": "variable \"enable_s3_access_points_support\" {\n  description = \"Feature flag to enable S3 Access Points support\"\n  type        = bool\n  default     = false\n}"
+          }
+        },
+        "examples": {
+          "directories": {},
+          "readme_terraform_blocks": []
+        },
+        "readme": null
+      },
+      "relationships": {
+        "depends_on": [],
+        "used_by": []
+      }
+    }
+  }
+}

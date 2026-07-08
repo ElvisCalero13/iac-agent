@@ -1,0 +1,20 @@
+[project]
+name = "iac-agent"
+version = "0.1.0"
+description = "AI agent for IaC planning"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12.0",
+    "pydantic>=2.7.0",
+    "rich>=13.7.0",
+    "PyGithub>=2.3.0",
+    "python-dotenv>=1.0.1",
+    "openai>=1.30.0",
+    "boto3>=1.34.0",
+]
+
+[project.scripts]
+iac-agent = "apps.cli.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src", "."]

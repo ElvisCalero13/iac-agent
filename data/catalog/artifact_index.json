@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-07-08T17:36:36.396855+00:00",
+  "artifacts": {
+    "knowledge_base": "knowledge_base.json",
+    "metadata": "metadata.json",
+    "repositories": "repositories.json",
+    "modules": [
+      "modules/s3.json"
+    ],
+    "spokes": [
+      "spokes/caas-spoke.json"
+    ]
+  },
+  "counts": {
+    "modules": 1,
+    "spokes": 1
+  }
+}

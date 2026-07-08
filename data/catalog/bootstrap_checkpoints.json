@@ -1,0 +1,20 @@
+{
+  "iac-sandbox-module-s3": {
+    "repo_name": "iac-sandbox-module-s3",
+    "repository_type": "module",
+    "branch": "main",
+    "last_indexed_commit": "d4c21d4410a63c0aeeca6d143eaed9992e2025ca",
+    "last_indexed_tag": "v1.1.0",
+    "metadata_s3_key": "knowledge-base/modules/s3.json",
+    "last_indexed_at": "2026-07-08T03:32:08.697360+00:00"
+  },
+  "iac-sandbox-caas-spoke": {
+    "repo_name": "iac-sandbox-caas-spoke",
+    "repository_type": "spoke",
+    "branch": "main",
+    "last_indexed_commit": "27b0dfd585ae7e70f726e970b7dfea3ba972e228",
+    "last_indexed_tag": null,
+    "metadata_s3_key": "knowledge-base/spokes/caas-spoke.json",
+    "last_indexed_at": "2026-07-08T03:32:08.697360+00:00"
+  }
+}

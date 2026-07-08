@@ -1,0 +1,22 @@
+{
+  "modules": {
+    "s3": {
+      "name": "terraform-aws-hub-s3",
+      "repo_name": "iac-sandbox-module-s3",
+      "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-module-s3.git",
+      "default_branch": "main",
+      "base_strategy": "latest_tag",
+      "local_path": "data/repositories/terraform-aws-hub-s3"
+    }
+  },
+  "spokes": {
+    "caas-spoke": {
+      "name": "terraform-aws-spoke",
+      "repo_name": "iac-sandbox-caas-spoke",
+      "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-caas-spoke.git",
+      "default_branch": "main",
+      "base_strategy": "main",
+      "local_path": "data/repositories/terraform-aws-spoke"
+    }
+  }
+}

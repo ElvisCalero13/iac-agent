@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies"
+      - python --version
+      - pip install --upgrade pip
+      - pip install -e .
+
+  pre_build:
+    commands:
+      - echo "Preparing bootstrap execution"
+      - echo "BOOTSTRAP_PUBLISHER=$BOOTSTRAP_PUBLISHER"
+      - echo "BOOTSTRAP_S3_BUCKET=$BOOTSTRAP_S3_BUCKET"
+      - echo "BOOTSTRAP_S3_PREFIX=$BOOTSTRAP_S3_PREFIX"
+      - echo "AWS_REGION=$AWS_REGION"
+
+  build:
+    commands:
+      - echo "Running Knowledge Bootstrap"
+      - pip install -e .
+      - iac-agent bootstrap-aws
+
+  post_build:
+    commands:
+      - echo "Bootstrap completed"

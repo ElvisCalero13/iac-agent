@@ -1,0 +1,45 @@
+{
+  "spoke_key": "caas-spoke",
+  "repository": {
+    "name": "terraform-aws-spoke",
+    "repo_name": "iac-sandbox-caas-spoke",
+    "repo_url": "https://github.com/ElvisCalero13/iac-sandbox-caas-spoke.git",
+    "default_branch": "main",
+    "base_strategy": "main",
+    "local_path": "data/repositories/terraform-aws-spoke"
+  },
+  "state": {
+    "modules": {
+      "cloudwatch_contactless": {
+        "block_name": "cloudwatch_contactless",
+        "source_file": "cloudwatch_contactless.tf",
+        "source": "../modules/cloudwatch",
+        "inputs": {},
+        "terraform_block": "module \"cloudwatch_contactless\" {\n  source = \"../modules/cloudwatch\"\n\n}"
+      },
+      "kms_contactless": {
+        "block_name": "kms_contactless",
+        "source_file": "kms_contactless.tf",
+        "source": "../modules/kms",
+        "inputs": {},
+        "terraform_block": "module \"kms_contactless\" {\n  source = \"../modules/kms\"\n\n}"
+      },
+      "s3_contactless": {
+        "block_name": "s3_contactless",
+        "source_file": "s3_contactless.tf",
+        "source": "git::https://github.com/ElvisCalero13/iac-sandbox-module-s3.git?ref=v1.1.0",
+        "inputs": {
+          "enable_versioning": "var.s3_contactless_enable_versioning"
+        },
+        "terraform_block": "module \"s3_contactless\" {\n  source = \"git::https://github.com/ElvisCalero13/iac-sandbox-module-s3.git?ref=v1.1.0\"\n\n  enable_versioning = var.s3_contactless_enable_versioning\n}"
+      }
+    },
+    "variables": {
+      "s3_contactless_enable_versioning": {
+        "name": "s3_contactless_enable_versioning",
+        "source_file": "s3_contactless.variables.tf",
+        "terraform_block": "variable \"s3_contactless_enable_versioning\" {\n  description = \"Should versioning be enabled? (true/false)\"\n  type        = bool\n  default     = true\n}"
+      }
+    }
+  }
+}
