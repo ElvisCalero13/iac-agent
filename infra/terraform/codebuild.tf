@@ -30,6 +30,15 @@ resource "aws_codebuild_project" "bootstrap" {
       name  = "AWS_REGION"
       value = var.aws_region
     }
+    environment_variable {
+      name  = "BOOTSTRAP_CONFIG_PROVIDER"
+      value = "ssm"
+    }
+
+    environment_variable {
+      name  = "BOOTSTRAP_CONFIG_PARAMETER"
+      value = aws_ssm_parameter.repositories_config.name
+    }
   }
 
   source {

@@ -43,6 +43,13 @@ resource "aws_iam_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
+          "ssm:GetParameter"
+        ]
+        Resource = aws_ssm_parameter.repositories_config.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
