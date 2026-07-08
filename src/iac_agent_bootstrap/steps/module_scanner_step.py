@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from iac_agent.services.bootstrap.module_scanner import ModuleScanner
+from iac_agent_bootstrap.scanners.module_scanner import ModuleScanner
 from iac_agent_bootstrap.context import BootstrapContext
 
 

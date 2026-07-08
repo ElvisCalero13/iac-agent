@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from iac_agent.analysis.module_schema_extractor import ModuleSchemaExtractor
+from iac_agent_bootstrap.knowledge.analysis.module_schema_extractor import ModuleSchemaExtractor
 from iac_agent_bootstrap.context import BootstrapContext
 
 

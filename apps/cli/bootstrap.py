@@ -27,8 +27,6 @@ console = Console()
 def bootstrap_aws():
     BootstrapWorkflow().run()
 
-
-
 @bootstrap_app.command("knowledge-modules")
 def knowledge_modules():
     repo = LocalKnowledgeRepository()

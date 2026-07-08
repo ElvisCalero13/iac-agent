@@ -1,4 +1,4 @@
-from iac_agent.analysis.extractors.spoke_state_extractor import SpokeStateExtractor
+from iac_agent_bootstrap.knowledge.analysis.extractors.spoke_state_extractor import SpokeStateExtractor
 from iac_agent_bootstrap.context import BootstrapContext
 
 

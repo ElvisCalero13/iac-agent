@@ -22,7 +22,7 @@ phases:
     commands:
       - echo "Running Knowledge Bootstrap"
       - pip install -e .
-      - iac-agent bootstrap-aws
+      - iac-agent bootstrap bootstrap-aws
 
   post_build:
     commands:
